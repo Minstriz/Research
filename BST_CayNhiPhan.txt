@@ -1,0 +1,148 @@
+#include <iostream>
+using namespace std;
+typedef int typeinfo;
+struct Node {
+	typeinfo data;
+	Node* left;
+	Node* right;
+};
+typedef Node* Nodeptr;
+
+void chenCay(Nodeptr &r, int a);
+void PreOrder(Nodeptr r);
+void InOrder(Nodeptr r);
+void PostOrder(Nodeptr r);
+Nodeptr TimCay(Nodeptr r, int a);
+void xoa(Nodeptr &r, int a);
+#include "Header.h"
+void chenCay(Nodeptr &r, int a)
+{
+	if (r == NULL)
+	{
+		Nodeptr p = new Node;
+		p->data = a;
+		p->left = NULL;
+		p->right = NULL;
+		r = p;
+	}
+	else if (r->data > a)
+	{
+		chenCay(r->left, a);
+	}
+	else if (r->data < a)
+	{
+		chenCay(r->right, a);
+	}
+}
+//Duyet truoc
+void PreOrder(Nodeptr r)
+{
+
+	if (r != NULL) {
+		cout << r->data << " ";
+		PreOrder(r->left);
+		PreOrder(r->right);
+	}
+}
+//Duyet giua
+void InOrder(Nodeptr r)
+{
+	if (r != NULL)
+	{
+		InOrder(r->left);
+		cout << r->data << " ";
+		InOrder(r->right);
+	}
+}
+//Duyet sau
+void PostOrder(Nodeptr r)
+{
+	if (r != NULL)
+	{
+		PostOrder(r->left);
+		PostOrder(r->right);
+		cout << r->data << " ";
+	}
+}
+//Tim cay
+Nodeptr TimCay(Nodeptr r, int a)
+{
+	if (r == NULL)
+		return 0;
+	else if (r->data == a)
+		return r;
+	else if (r->data > a)
+		return TimCay(r->left, a);
+	else
+		return TimCay(r->right, a);
+}
+//xoa cay
+void xoa(Nodeptr &r, int a)
+{
+	if (r == NULL) return;
+	else
+	{
+		if (a < r->data)
+			xoa(r->left, a);
+		else
+			if (a > r->data)
+				xoa(r->right, a);
+			else
+			{
+				Nodeptr p = new Node;
+				if (r->left == NULL)
+				{
+					p = r;
+					r = r->right;
+					delete p;
+				}
+				else
+					if (r->right == NULL)
+					{
+						p = r;
+						r = r->left;
+						delete p;
+					}
+					else
+					{
+						p = r->left;
+						while (p->right != NULL)
+							p = p->right;
+						r->data = p->data;
+						xoa(r->left, p->data);
+
+					}
+			}
+	}
+}
+#include "Header.h"
+void main()
+{
+	Nodeptr r = NULL;
+	int a[15] = { 24,17,11,7,53,4,13,12,8,43,31,22,14,27,48 };
+	for (int i = 0; i < 15; i++)
+	{
+		chenCay(r, a[i]);
+	}
+	cout << "\nPreOrder:";
+	PreOrder(r);
+	cout << "\nInOrder:";
+	InOrder(r);
+	cout << "\nPostOrder:";
+	PostOrder(r);
+	int k;
+	cout << "\nNhap so can tim:";
+	cin >> k;
+	if (TimCay(r, k) == NULL)
+	{
+		cout << "\nKhong co" << " " << k << " trong cay nhi phan:";
+	}
+	else
+		cout << "\nCo" << " " << k << " trong cay nhi phan";
+	int kk;
+	cout << "\nNhap so can xoa:";
+	cin >> kk;
+	xoa(r, kk);
+	cout << " ";
+	InOrder(r);
+}
